@@ -30,7 +30,7 @@ android {
     compileSdkVersion 34
 
     defaultConfig {
-        minSdkVersion 24
+        minSdkVersion 21
         targetSdkVersion 34
         consumerProguardFiles 'easyblex-consumer-rules.pro'
     }
