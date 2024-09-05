@@ -294,7 +294,10 @@ abstract class AbstractScanner implements Scanner {
         }
         performStartScan();
         if (getType() != ScannerType.CLASSIC) {
-            mainHandler.postDelayed(stopScanRunnable, configuration.scanPeriodMillis);
+            // 默认无限扫描，若有配置就使用配置的扫描时间
+            if (configuration.scanPeriodMillis != 0){
+                mainHandler.postDelayed(stopScanRunnable, configuration.scanPeriodMillis);
+            }
         }
     }
 

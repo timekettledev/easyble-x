@@ -19,7 +19,7 @@ import java.util.List;
  * author: zengfansheng
  */
 public class ScanConfiguration {
-    int scanPeriodMillis = 10000;
+    int scanPeriodMillis = 0;
     boolean acceptSysConnectedDevice;
     ScanSettings scanSettings;
     boolean onlyAcceptBleDevice;
