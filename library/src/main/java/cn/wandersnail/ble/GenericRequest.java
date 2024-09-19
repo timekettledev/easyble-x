@@ -26,6 +26,7 @@ class GenericRequest implements Request, Comparable<GenericRequest> {
     //---------  分包发送相关  ---------
     Queue<byte[]> remainQueue;
     byte[] sendingBytes;
+    int retryTime = 0;
     //--------------------------------
 
     GenericRequest(RequestBuilder builder) {

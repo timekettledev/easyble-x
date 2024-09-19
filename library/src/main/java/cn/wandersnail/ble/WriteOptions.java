@@ -15,6 +15,8 @@ public class WriteOptions {
     final boolean isWaitWriteResult;
     final int writeType;
     final boolean useMtuAsPackageSize;
+    final boolean useFailRetry;
+    final int failRetryTimeLimit;
 
     private WriteOptions(Builder builder) {
         packageWriteDelayMillis = builder.packageWriteDelayMillis;
@@ -23,6 +25,8 @@ public class WriteOptions {
         isWaitWriteResult = builder.isWaitWriteResult;
         writeType = builder.writeType;
         useMtuAsPackageSize = builder.useMtuAsPackageSize;
+        useFailRetry = builder.useFailRetry;
+        failRetryTimeLimit = builder.failRetryTimeLimit;
     }
 
     /**
@@ -68,6 +72,8 @@ public class WriteOptions {
         private boolean isWaitWriteResult = true;
         private int writeType = -1;
         private boolean useMtuAsPackageSize = false;
+        private boolean useFailRetry = false;
+        private int failRetryTimeLimit = 3;
 
         /**
          * 两次写数据到特征的时间间隔
@@ -125,6 +131,22 @@ public class WriteOptions {
          */
         public Builder setMtuAsPackageSize() {
             useMtuAsPackageSize = true;
+            return this;
+        }
+
+        /**
+         * 是否需要失败重试逻辑
+         */
+        public Builder setFailRetry(boolean failRetry) {
+            useFailRetry = failRetry;
+            return this;
+        }
+
+        /**
+         * 失败重试次数，只有设置了{@link WriteOptions#useFailRetry}为true才有效
+         */
+        public Builder setMaxRetryTimes(int maxRetryTimes) {
+            this.failRetryTimeLimit = maxRetryTimes;
             return this;
         }
         

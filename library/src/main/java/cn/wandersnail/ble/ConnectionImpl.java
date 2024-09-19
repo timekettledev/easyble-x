@@ -685,8 +685,7 @@ class ConnectionImpl implements Connection, ScanListener {
                     case MSG_REQUEST_TIMEOUT:
                         GenericRequest request = (GenericRequest) msg.obj;
                         if (connection.currentRequest != null && connection.currentRequest == request) {
-                            connection.handleFailedCallback(request, REQUEST_FAIL_TYPE_REQUEST_TIMEOUT, false);
-                            connection.executeNextRequest();
+                            connection.handleFailedCallback(request, REQUEST_FAIL_TYPE_REQUEST_TIMEOUT, true);
                         }
                         break;
                     case MSG_CONNECT://连接   
@@ -764,6 +763,15 @@ class ConnectionImpl implements Connection, ScanListener {
                 currentRequest = null;
             } else {
                 executeRequest(requestQueue.remove(0));
+            }
+        }
+    }
+
+    private void executeCurrentRequestAgain() {
+        synchronized (this) {
+            connHandler.removeMessages(MSG_REQUEST_TIMEOUT);
+            if (currentRequest != null) {
+                executeRequest(currentRequest);
             }
         }
     }
@@ -951,9 +959,16 @@ class ConnectionImpl implements Connection, ScanListener {
     }
 
     private void handleFailedCallback(GenericRequest request, int failType, int status, boolean executeNext) {
-        notifyRequestFailed(request, failType, status);
         if (executeNext) {
-            executeNextRequest();
+            if (request.writeOptions.useFailRetry && request.retryTime < request.writeOptions.failRetryTimeLimit) {
+                request.retryTime++;
+                executeCurrentRequestAgain();
+            } else {
+                notifyRequestFailed(request, failType, status);
+                executeNextRequest();
+            }
+        } else {
+            notifyRequestFailed(request, failType, status);
         }
     }
     
