@@ -596,6 +596,12 @@ class ConnectionImpl implements Connection, ScanListener {
 
     private void sendConnectionCallback() {
         if (lastConnectionState != device.connectionState) {
+            if (lastConnectionState == ConnectionState.SERVICE_DISCOVERING && device.connectionState == ConnectionState.DISCONNECTED) {
+                if (observer != null) {
+                    posterDispatcher.post(observer, MethodInfoGenerator.onServiceDiscoverFailed(device));
+                }
+                observable.notifyObservers(MethodInfoGenerator.onServiceDiscoverFailed(device));
+            }
             lastConnectionState = device.connectionState;
             if (observer != null) {
                 posterDispatcher.post(observer, MethodInfoGenerator.onConnectionStateChanged(device));

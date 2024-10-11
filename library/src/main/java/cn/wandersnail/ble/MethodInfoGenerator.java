@@ -18,6 +18,10 @@ class MethodInfoGenerator {
         return new MethodInfo("onConnectionStateChanged", new MethodInfo.Parameter(Device.class, device));
     }
 
+    static MethodInfo onServiceDiscoverFailed(Device device) {
+        return new MethodInfo("onServiceDiscoverFailed", new MethodInfo.Parameter(Device.class, device));
+    }
+
     static MethodInfo onConnectFailed(Device device, int failType) {
         return new MethodInfo("onConnectFailed", new MethodInfo.Parameter(Device.class, device),
                 new MethodInfo.Parameter(int.class, failType));

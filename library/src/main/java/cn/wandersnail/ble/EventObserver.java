@@ -139,6 +139,12 @@ public interface EventObserver extends Observer {
     }
 
     /**
+     * 服务发现失败
+     */
+    default void onServiceDiscoverFailed(@NonNull Device device) {
+    }
+
+    /**
      * 连接失败
      *
      * @param device   设备
