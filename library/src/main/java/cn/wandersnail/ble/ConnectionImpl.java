@@ -966,7 +966,7 @@ class ConnectionImpl implements Connection, ScanListener {
 
     private void handleFailedCallback(GenericRequest request, int failType, int status, boolean executeNext) {
         if (executeNext) {
-            if (request.writeOptions.useFailRetry && request.retryTime < request.writeOptions.failRetryTimeLimit) {
+            if (request.writeOptions != null && request.writeOptions.useFailRetry && request.retryTime < request.writeOptions.failRetryTimeLimit) {
                 request.retryTime++;
                 executeCurrentRequestAgain();
             } else {
