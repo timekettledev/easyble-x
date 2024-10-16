@@ -596,7 +596,8 @@ class ConnectionImpl implements Connection, ScanListener {
 
     private void sendConnectionCallback() {
         if (lastConnectionState != device.connectionState) {
-            if (lastConnectionState == ConnectionState.SERVICE_DISCOVERING && device.connectionState == ConnectionState.DISCONNECTED) {
+            // 服务发现过程中且不是主动断连，发送服务发现失败
+            if (lastConnectionState == ConnectionState.SERVICE_DISCOVERING && device.connectionState == ConnectionState.DISCONNECTED && !isActiveDisconnect) {
                 if (observer != null) {
                     posterDispatcher.post(observer, MethodInfoGenerator.onServiceDiscoverFailed(device));
                 }
@@ -1223,7 +1224,7 @@ class ConnectionImpl implements Connection, ScanListener {
     private void clearRequestQueueAndNotify() {
         synchronized (this) {
             for (GenericRequest request : requestQueue) {
-                handleFailedCallback(request, REQUEST_FAIL_TYPE_CONNECTION_DISCONNECTED, false);
+                handleFailedCallback(request, REQUEST_FAIL_TYPE_CONNECTION_CLEAR_REQUEST_QUEUE, false);
             }
             if (currentRequest != null) {
                 handleFailedCallback(currentRequest, REQUEST_FAIL_TYPE_CONNECTION_DISCONNECTED, false);
