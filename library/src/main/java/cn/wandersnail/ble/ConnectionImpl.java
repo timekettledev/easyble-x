@@ -50,6 +50,7 @@ class ConnectionImpl implements Connection, ScanListener {
     private static final int MSG_DISCOVER_SERVICES = 6;
     private static final int MSG_ON_CONNECTION_STATE_CHANGE = 7;
     private static final int MSG_ON_SERVICES_DISCOVERED = 8;
+    private static final int MSG_EXEC_NEXT_REQUEST = 9;
 
     private static final int MSG_ARG_NONE = 0;
     private static final int MSG_ARG_RECONNECT = 1;
@@ -476,7 +477,7 @@ class ConnectionImpl implements Connection, ScanListener {
         device.connectionState = ConnectionState.CONNECTING;
         sendConnectionCallback();
         logD(Logger.TYPE_CONNECTION_STATE, "connecting [name: %s, addr: %s]", device.name, device.address);
-        connHandler.postDelayed(connectRunnable, 500);
+        connHandler.postDelayed(connectRunnable, 200);
     }
 
     /**
@@ -722,6 +723,9 @@ class ConnectionImpl implements Connection, ScanListener {
                                 connection.doOnConnectionStateChange(msg.arg1, msg.arg2);
                             }
                         }
+                        break;
+                    case MSG_EXEC_NEXT_REQUEST:
+                        connection.executeNextRequest();
                         break;
                 }
             }
@@ -972,7 +976,7 @@ class ConnectionImpl implements Connection, ScanListener {
                 executeCurrentRequestAgain();
             } else {
                 notifyRequestFailed(request, failType, status);
-                executeNextRequest();
+                connHandler.sendEmptyMessage(MSG_EXEC_NEXT_REQUEST);
             }
         } else {
             notifyRequestFailed(request, failType, status);
