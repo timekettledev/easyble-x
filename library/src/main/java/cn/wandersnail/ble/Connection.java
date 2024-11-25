@@ -115,6 +115,11 @@ public interface Connection {
     void clearRequestQueue();
 
     /**
+     * 清除请求队列，触发事件
+     */
+    void clearRequestQueueWithNotify();
+
+    /**
      * 将指定的请求类型从队列中移除，如果传null，则清除请求队列，不触发事件
      */
     void clearRequestQueueByType(@Nullable RequestType type);

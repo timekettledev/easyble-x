@@ -1207,6 +1207,16 @@ class ConnectionImpl implements Connection, ScanListener {
     }
 
     @Override
+    public void clearRequestQueueWithNotify() {
+        synchronized (this) {
+            for (GenericRequest request : requestQueue) {
+                handleFailedCallback(request, REQUEST_FAIL_TYPE_CONNECTION_CLEAR_REQUEST_QUEUE, false);
+            }
+            clearRequestQueue();
+        }
+    }
+
+    @Override
     public void clearRequestQueueByType(@Nullable RequestType type) {
         synchronized (this) {
             Iterator<GenericRequest> it = requestQueue.iterator();
