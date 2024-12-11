@@ -665,7 +665,12 @@ class ConnectionImpl implements Connection, ScanListener {
         // characteristic's write type, instead of always Write With Response, as the spec says.
         int writeType = characteristic.getWriteType();
         characteristic.setWriteType(BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT);
-        boolean result = bluetoothGatt.writeDescriptor(descriptor);
+        boolean result;
+        if (bluetoothGatt == null) {
+            return true;
+        } else {
+            result = bluetoothGatt.writeDescriptor(descriptor);
+        }
         if (!enable) {
             //还原原始值
             descriptor.setValue(originValue);
