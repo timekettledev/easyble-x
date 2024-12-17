@@ -97,8 +97,11 @@ abstract class AbstractScanner implements Scanner {
         if (targetSdkVersion < Build.VERSION_CODES.Q) {//target sdk版本在29以上需要精确定位权限才能搜索到蓝牙设备
             return !PermissionChecker.hasPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) &&
                     !PermissionChecker.hasPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION);
+        } else if (targetSdkVersion < Build.VERSION_CODES.S) {//target sdk版本在31以下29以上需要精确定位权限才能搜索到蓝牙设备
+            return !PermissionChecker.hasPermission(context, Manifest.permission.ACCESS_FINE_LOCATION);
+        } else {
+            return false;
         }
-        return !PermissionChecker.hasPermission(context, Manifest.permission.ACCESS_FINE_LOCATION);
     }
 
     //检查是否有搜索权限
